@@ -1,122 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Artifact One — Computer Engineering ePortfolio." />
-    <title>Artifact 1 | ePortfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 1 · ePortfolio</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container nav">
-            <a class="brand" href="index.html" aria-label="Home">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10.5" stroke="currentColor" stroke-width="1.2"/>
-                        <path d="M12 2v10L4.5 18.5M12 12l7.5 6.5M12 12V2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                </span>
-                <span>ePortfolio</span>
-            </a>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="artifacts.html" class="active">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </header>
+<header>
+    <a href="index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="about.html">About</a>
+        <a href="artifacts.html" aria-current="page">Artifacts</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
 
-    <main>
-        <section class="artifact-header">
-            <div class="container">
-                <a class="back-link" href="artifacts.html">&larr; All Artifacts</a>
-                <span class="section-eyebrow">Artifact 01</span>
-                <h1>[Title of Artifact One]</h1>
-                <p style="max-width: 65ch; font-size: 1.1rem; color: var(--color-ink-soft);">
-                    A one-to-two sentence summary of this artifact — what it is,
-                    what problem it solves, and why it belongs in this portfolio.
-                </p>
-                <div class="artifact-header__meta">
-                    <span><strong>Course</strong>[Course Number / Name]</span>
-                    <span><strong>Format</strong>[Google Doc / Slides / PDF]</span>
-                    <span><strong>Date</strong>[Month, Year]</span>
-                </div>
-            </div>
-        </section>
+<main>
+    <a href="artifacts.html" class="back">&larr; Artifacts</a>
+    <h1>Artifact 1 — [PLACEHOLDER: title]</h1>
+    <p class="lede">[PLACEHOLDER: one-sentence summary of this artifact]</p>
 
-        <section class="section">
-            <div class="container">
-                <span class="section-eyebrow">Embedded document</span>
-                <h2 style="margin-bottom: 1.5rem;">Read the artifact</h2>
+    <div class="embed embed--doc">
+        <!-- Google Docs: File > Share > Publish to web > Embed -->
+        <iframe src="about:blank" title="Artifact 1 document" allowfullscreen loading="lazy"></iframe>
+        <small>[PLACEHOLDER: Google Doc/Slides] — replace iframe <code>src</code>.</small>
+    </div>
 
-                <div class="embed embed--tall">
-                    <!--
-                        Replace the src with your Google Doc/Slides embed URL:
-                          - Google Doc:    File > Share > Publish to web > Embed
-                            Example: https://docs.google.com/document/d/FILE_ID/pub?embedded=true
-                          - Google Slides: File > Share > Publish to web > Embed
-                            Example: https://docs.google.com/presentation/d/FILE_ID/embed
-                    -->
-                    <iframe
-                        src="about:blank"
-                        title="Artifact 1 document"
-                        loading="lazy"
-                        allowfullscreen></iframe>
-                    <div class="embed-placeholder">
-                        <div>
-                            <strong>Google Doc / Slides Placeholder</strong>
-                            Replace the <code>iframe src</code> in
-                            <code>artifact1.html</code> with your published embed URL.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <h2>Reflection</h2>
+    <p>[PLACEHOLDER: context, problem, and what you learned through revision.]</p>
+</main>
 
-        <section class="section section--muted">
-            <div class="container prose">
-                <span class="section-eyebrow">Reflection</span>
-                <h2>Process &amp; reflection</h2>
-                <p>
-                    Use this section to describe how the artifact was produced, the
-                    technical and communication challenges you faced, and what you
-                    learned through revision. Keep it specific and honest.
-                </p>
-                <h3 style="font-size: 1rem;">Skills demonstrated</h3>
-                <ul>
-                    <li>[e.g., technical writing for a non-specialist audience]</li>
-                    <li>[e.g., circuit analysis, software design, testing]</li>
-                    <li>[e.g., visual communication through diagrams]</li>
-                </ul>
-                <h3 style="font-size: 1rem;">What I would change</h3>
-                <p>
-                    A short paragraph on what you would refine if you revisited this
-                    artifact today.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <div>&copy; <span id="year">2026</span> · Computer Engineering ePortfolio</div>
-            <ul class="footer-links">
-                <li><a href="about.html">About</a></li>
-                <li><a href="artifacts.html">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </footer>
-
-    <script src="js/main.js"></script>
-    <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
 </body>
 </html>

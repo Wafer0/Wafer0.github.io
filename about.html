@@ -1,138 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="About the author — Computer Engineering student. Bio and professional ethos." />
-    <title>About | ePortfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · ePortfolio</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container nav">
-            <a class="brand" href="index.html" aria-label="Home">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10.5" stroke="currentColor" stroke-width="1.2"/>
-                        <path d="M12 2v10L4.5 18.5M12 12l7.5 6.5M12 12V2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                </span>
-                <span>ePortfolio</span>
-            </a>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html" class="active">About</a></li>
-                <li><a href="artifacts.html">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </header>
+<header>
+    <a href="index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="about.html" aria-current="page">About</a>
+        <a href="artifacts.html">Artifacts</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
 
-    <main>
-        <section class="hero">
-            <div class="container hero__inner">
-                <span class="hero__eyebrow">About</span>
-                <h1 class="hero__title">Engineering the intersection of hardware and thought.</h1>
-                <p class="hero__lede">
-                    Computer Engineering student, writer, and lifelong builder.
-                    This is the story behind the portfolio.
-                </p>
-            </div>
-        </section>
+<main>
+    <h1>About</h1>
+    <p class="lede">[PLACEHOLDER: one-line summary of who you are]</p>
 
-        <section class="section">
-            <div class="container">
-                <div class="two-col">
-                    <aside class="bio-meta">
-                        <span class="section-eyebrow">Profile</span>
-                        <h2 style="font-size: 1.5rem;">At a glance</h2>
-                        <dl>
-                            <dt>Program</dt>
-                            <dd>Computer Engineering, B.S.</dd>
+    <h2>Bio</h2>
+    <p>[PLACEHOLDER: two or three sentences — program, year, focus, background.]</p>
 
-                            <dt>Focus</dt>
-                            <dd>Embedded Systems · Software · Digital Design</dd>
+    <h2>Professional ethos</h2>
+    <p>[PLACEHOLDER: the principles that guide your engineering practice.]</p>
+</main>
 
-                            <dt>Writing</dt>
-                            <dd>Professional Writing Program</dd>
-
-                            <dt>Location</dt>
-                            <dd>[Your City, State]</dd>
-
-                            <dt>Expected Grad.</dt>
-                            <dd>[Month, Year]</dd>
-                        </dl>
-                    </aside>
-
-                    <article class="prose">
-                        <span class="section-eyebrow">Biography</span>
-                        <h2>Short bio</h2>
-                        <p>
-                            I'm a Computer Engineering student with a deep interest in the
-                            boundary where software meets hardware. My coursework spans
-                            digital logic, embedded systems, data structures, computer
-                            architecture, and the communication skills that make technical
-                            work legible to everyone it touches.
-                        </p>
-                        <p>
-                            This portfolio documents both my technical projects and my
-                            development as a professional communicator. Replace this
-                            placeholder text with your own story, background, and what drives
-                            your work.
-                        </p>
-
-                        <h2>Professional ethos</h2>
-                        <p>
-                            I believe good engineering is never only technical. It is
-                            equal parts precision, empathy, and clarity — a discipline that
-                            rewards humility as much as it rewards skill. My approach rests
-                            on three principles:
-                        </p>
-                        <ul>
-                            <li>
-                                <strong>Rigor.</strong> Specifications, tests, and measurements
-                                before conclusions.
-                            </li>
-                            <li>
-                                <strong>Clarity.</strong> Documentation and writing that respect
-                                the reader's time.
-                            </li>
-                            <li>
-                                <strong>Craft.</strong> Iteration until the work is worthy of
-                                its users.
-                            </li>
-                        </ul>
-
-                        <h2>Beyond the classroom</h2>
-                        <p>
-                            Outside of coursework, I am interested in [your interests — open
-                            source, robotics, music, sport, etc.]. Add a paragraph here that
-                            gives readers a sense of who you are beyond your resume.
-                        </p>
-                    </article>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <div>&copy; <span id="year">2026</span> · Computer Engineering ePortfolio</div>
-            <ul class="footer-links">
-                <li><a href="about.html">About</a></li>
-                <li><a href="artifacts.html">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </footer>
-
-    <script src="js/main.js"></script>
-    <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
 </body>
 </html>

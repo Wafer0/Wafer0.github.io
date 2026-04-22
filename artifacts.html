@@ -1,149 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Curated collection of artifacts, projects, and a welcome video from a Computer Engineering student." />
-    <title>Artifacts | ePortfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifacts · ePortfolio</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container nav">
-            <a class="brand" href="index.html" aria-label="Home">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10.5" stroke="currentColor" stroke-width="1.2"/>
-                        <path d="M12 2v10L4.5 18.5M12 12l7.5 6.5M12 12V2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                </span>
-                <span>ePortfolio</span>
-            </a>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="artifacts.html" class="active">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </header>
+<header>
+    <a href="index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="about.html">About</a>
+        <a href="artifacts.html" aria-current="page">Artifacts</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
 
-    <main>
-        <section class="hero">
-            <div class="container hero__inner">
-                <span class="hero__eyebrow">Work · Artifacts</span>
-                <h1 class="hero__title">A curated collection of work.</h1>
-                <p class="hero__lede">
-                    Three artifacts developed throughout my Computer Engineering coursework,
-                    each paired with reflective writing from the Professional Writing
-                    Program. Begin with the welcome video below.
-                </p>
-            </div>
-        </section>
+<main>
+    <h1>Artifacts</h1>
+    <p class="lede">[PLACEHOLDER: one-line intro for the artifacts page]</p>
 
-        <section class="section">
-            <div class="container">
-                <span class="section-eyebrow">Welcome video</span>
-                <h2 style="margin-bottom: 1rem;">Start here.</h2>
-                <p style="max-width: 60ch; margin-bottom: 2rem;">
-                    A short introduction to this portfolio, its purpose, and what you
-                    will find inside. Replace the placeholder iframe source with the
-                    embed URL from your hosted video (YouTube, Google Drive, or Vimeo).
-                </p>
+    <h2>Welcome video</h2>
+    <div class="embed">
+        <!-- Replace src with a YouTube/Vimeo/Drive embed URL. -->
+        <iframe src="about:blank" title="Welcome video" allowfullscreen loading="lazy"></iframe>
+        <small>[PLACEHOLDER: welcome video] — replace iframe <code>src</code>.</small>
+    </div>
 
-                <div class="embed">
-                    <!--
-                        To embed a video:
-                          - YouTube: https://www.youtube.com/embed/VIDEO_ID
-                          - Google Drive: https://drive.google.com/file/d/FILE_ID/preview
-                          - Vimeo: https://player.vimeo.com/video/VIDEO_ID
-                    -->
-                    <iframe
-                        src="about:blank"
-                        title="Welcome video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen
-                        loading="lazy"></iframe>
-                    <div class="embed-placeholder">
-                        <div>
-                            <strong>Welcome Video Placeholder</strong>
-                            Replace the <code>iframe src</code> in
-                            <code>artifacts.html</code> with your video embed URL.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <h2>Work</h2>
+    <ul class="works">
+        <li>
+            <a href="artifact1.html">Artifact 1 — [PLACEHOLDER: title]<br><small>[PLACEHOLDER: short description]</small></a>
+        </li>
+        <li>
+            <a href="artifact2.html">Artifact 2 — [PLACEHOLDER: title]<br><small>[PLACEHOLDER: short description]</small></a>
+        </li>
+        <li>
+            <a href="artifact3.html">Artifact 3 — [PLACEHOLDER: title]<br><small>[PLACEHOLDER: short description]</small></a>
+        </li>
+    </ul>
+</main>
 
-        <section class="section section--muted">
-            <div class="container">
-                <span class="section-eyebrow">The artifacts</span>
-                <h2>Three studies in computer engineering &amp; communication.</h2>
-                <p style="max-width: 60ch; margin-bottom: 2.5rem;">
-                    Each artifact includes the original document (embedded from Google
-                    Docs or Slides), a short description, and a reflection on the
-                    writing and engineering process.
-                </p>
-
-                <div class="grid">
-                    <article class="card">
-                        <div class="card__num">Artifact 01</div>
-                        <h3 class="card__title">[Title of Artifact One]</h3>
-                        <p class="card__body">
-                            A short summary of the first artifact — its context, the
-                            problem it addresses, and the skills it demonstrates.
-                        </p>
-                        <a href="artifact1.html" class="card__link">
-                            View artifact <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-                        </a>
-                    </article>
-
-                    <article class="card">
-                        <div class="card__num">Artifact 02</div>
-                        <h3 class="card__title">[Title of Artifact Two]</h3>
-                        <p class="card__body">
-                            A short summary of the second artifact — its context, the
-                            problem it addresses, and the skills it demonstrates.
-                        </p>
-                        <a href="artifact2.html" class="card__link">
-                            View artifact <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-                        </a>
-                    </article>
-
-                    <article class="card">
-                        <div class="card__num">Artifact 03</div>
-                        <h3 class="card__title">[Title of Artifact Three]</h3>
-                        <p class="card__body">
-                            A short summary of the third artifact — its context, the
-                            problem it addresses, and the skills it demonstrates.
-                        </p>
-                        <a href="artifact3.html" class="card__link">
-                            View artifact <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-                        </a>
-                    </article>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <div>&copy; <span id="year">2026</span> · Computer Engineering ePortfolio</div>
-            <ul class="footer-links">
-                <li><a href="about.html">About</a></li>
-                <li><a href="artifacts.html">Artifacts</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </footer>
-
-    <script src="js/main.js"></script>
-    <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
 </body>
 </html>

@@ -1,0 +1,112 @@
+:root {
+    --ink: #111;
+    --muted: #666;
+    --line: #e5e5e5;
+    --max: 680px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 2rem 1.5rem 3rem;
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: #fff;
+}
+
+header, main, footer {
+    max-width: var(--max);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--line);
+}
+
+header .brand {
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+}
+
+nav a {
+    margin-left: 1.25rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-decoration: none;
+}
+
+nav a:first-child { margin-left: 0; }
+nav a:hover, nav a[aria-current="page"] { color: var(--ink); }
+
+h1 { font-size: 1.75rem; font-weight: 600; margin: 0 0 0.5rem; }
+h2 { font-size: 1.1rem; font-weight: 600; margin: 2.5rem 0 0.75rem; }
+
+p { margin: 0 0 1rem; }
+a { color: var(--ink); }
+
+.lede { color: var(--muted); margin-bottom: 2rem; }
+
+ul.works { list-style: none; padding: 0; margin: 0; }
+ul.works li {
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+}
+ul.works li:last-child { border-bottom: 1px solid var(--line); }
+ul.works a { display: block; text-decoration: none; font-weight: 500; }
+ul.works small { color: var(--muted); font-weight: 400; }
+
+.embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    margin: 1.5rem 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+}
+.embed--doc { padding-bottom: 75%; }
+.embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.embed small {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+dl.contact {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0.5rem 1rem;
+    margin: 0;
+}
+dl.contact dt { color: var(--muted); }
+dl.contact dd { margin: 0; }
+
+.back {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.back:hover { color: var(--ink); }
+
+footer {
+    margin-top: 4rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.85rem;
+}

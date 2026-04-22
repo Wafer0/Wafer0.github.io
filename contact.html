@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Professional contact information for a Computer Engineering student." />
+    <title>Contact | ePortfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a class="brand" href="index.html" aria-label="Home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10.5" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M12 2v10L4.5 18.5M12 12l7.5 6.5M12 12V2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span>ePortfolio</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="artifacts.html">Artifacts</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero__inner">
+                <span class="hero__eyebrow">Contact</span>
+                <h1 class="hero__title">Let's start a conversation.</h1>
+                <p class="hero__lede">
+                    Whether you're a faculty member, collaborator, or recruiter —
+                    the best ways to reach me are listed below. I aim to respond
+                    within two business days.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <span class="section-eyebrow">Channels</span>
+                <h2>Professional contact</h2>
+
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <h3>Email</h3>
+                        <a href="mailto:you@example.com">you@example.com</a>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>LinkedIn</h3>
+                        <a href="https://www.linkedin.com/in/your-handle/" target="_blank" rel="noopener noreferrer">
+                            linkedin.com/in/your-handle
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>GitHub</h3>
+                        <a href="https://github.com/Wafer0" target="_blank" rel="noopener noreferrer">
+                            github.com/Wafer0
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>University</h3>
+                        <p>[University Name]<br />[Department / College]</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--dark">
+            <div class="container">
+                <span class="section-eyebrow">Availability</span>
+                <h2 style="max-width: 26ch;">Open to internships, research, and thoughtful collaborations.</h2>
+                <p style="max-width: 60ch; color: #c8c8cd;">
+                    Interested in embedded systems, low-level software, digital design,
+                    or technical writing projects. Reach out via email or LinkedIn
+                    with a brief note about the work.
+                </p>
+                <a href="mailto:you@example.com" class="btn btn--primary" style="margin-top: 1.25rem; border-color: #fff; background: #fff; color: #000;">
+                    Send an email <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div>&copy; <span id="year">2026</span> · Computer Engineering ePortfolio</div>
+            <ul class="footer-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="artifacts.html">Artifacts</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

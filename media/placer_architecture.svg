@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Advanced Standard-Cell Placer &#8212; algorithm flow</title>
+  <desc id="d">A parallel simulated-annealing floorplanner. Inputs are MCNC .blocks and .nets files, parsed into a B*-tree representation. Eight independent SA chains run concurrently via Rayon, each repeatedly perturbing the tree (swap or delete-insert), packing it through a contour scan, scoring with a multi-objective cost function (area, HPWL, timing, congestion), and accepting/rejecting via the Metropolis criterion. Temperature decays geometrically until convergence or cooldown. The best chain is reported; outputs include placement files, SVG visualizations, and a JSON summary.</desc>
+
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#111"/>
+    </marker>
+    <marker id="arr2m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title       { font-size: 14px; font-weight: 600; fill: #111; }
+    .stage       { font-size: 11px; font-weight: 600; letter-spacing: 0.10em; fill: #666; }
+    .label       { font-size: 12px; font-weight: 600; fill: #111; }
+    .name        { font-size: 12px; font-weight: 600; fill: #111; }
+    .sub         { font-size: 10.5px; fill: #666; }
+    .signal      { font-size: 9.5px; fill: #666; }
+    .signal-em   { font-size: 9.5px; fill: #111; font-weight: 600; }
+    .filebox     { fill: #fff; stroke: #111; stroke-width: 1.5; }
+    .stepbox     { fill: #fff; stroke: #111; stroke-width: 1.5; }
+    .equation    { fill: #fff; stroke: #111; stroke-width: 1.5; }
+    .container   { fill: none; stroke: #111; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .chain       { fill: #fff; stroke: #111; stroke-width: 1; }
+    .arrow       { fill: none; stroke: #111; stroke-width: 1.2; }
+    .loopback    { fill: none; stroke: #666; stroke-width: 1.1; stroke-dasharray: 4 3; }
+    .divider     { stroke: #e5e5e5; stroke-width: 1; }
+  </style>
+
+  <text x="380" y="24" text-anchor="middle" class="title">Advanced Standard-Cell Placer</text>
+  <text x="380" y="40" text-anchor="middle" class="sub">B*-tree floorplan &#183; parallel simulated annealing &#183; multi-objective cost &#183; MCNC B10&#8211;B300</text>
+
+  <text x="40" y="65" class="stage">1 &#183; INPUT &amp; INIT</text>
+
+  <g>
+    <rect class="filebox" x="180" y="72" width="160" height="44" rx="3"/>
+    <text x="260" y="91" text-anchor="middle" class="name">B*.blocks</text>
+    <text x="260" y="106" text-anchor="middle" class="sub">modules &#183; w &#215; h &#183; pin offsets</text>
+  </g>
+  <g>
+    <rect class="filebox" x="360" y="72" width="200" height="44" rx="3"/>
+    <text x="460" y="91" text-anchor="middle" class="name">B*.nets</text>
+    <text x="460" y="106" text-anchor="middle" class="sub">connectivity &#183; for HPWL + timing</text>
+  </g>
+
+  <line class="arrow" x1="260" y1="116" x2="260" y2="129" marker-end="url(#arr2)"/>
+  <line class="arrow" x1="460" y1="116" x2="460" y2="129" marker-end="url(#arr2)"/>
+
+  <g>
+    <rect class="stepbox" x="240" y="130" width="240" height="32" rx="3"/>
+    <text x="360" y="151" text-anchor="middle" class="name">BTree::new() &#183; read() &#183; init()</text>
+  </g>
+
+  <line class="arrow" x1="360" y1="162" x2="360" y2="178" marker-end="url(#arr2)"/>
+
+  <line class="divider" x1="30" y1="170" x2="730" y2="170"/>
+
+  <rect class="container" x="30" y="180" width="700" height="330" rx="4"/>
+  <text x="380" y="200" text-anchor="middle" class="label">Parallel Simulated Annealing &#183; best-of-N via Rayon &#183; num_runs chains (default 8)</text>
+
+  <g>
+    <rect class="chain" x="50"  y="220" width="160" height="14" rx="2"/>
+    <text x="130" y="231" text-anchor="middle" class="sub">chain 0</text>
+    <rect class="chain" x="50"  y="237" width="160" height="14" rx="2"/>
+    <text x="130" y="248" text-anchor="middle" class="sub">chain 1</text>
+    <rect class="chain" x="50"  y="254" width="160" height="14" rx="2"/>
+    <text x="130" y="265" text-anchor="middle" class="sub">chain 2</text>
+    <rect class="chain" x="50"  y="271" width="160" height="14" rx="2"/>
+    <text x="130" y="282" text-anchor="middle" class="sub">chain 3</text>
+    <rect class="chain" x="50"  y="288" width="160" height="14" rx="2"/>
+    <text x="130" y="299" text-anchor="middle" class="sub">chain 4</text>
+    <rect class="chain" x="50"  y="305" width="160" height="14" rx="2"/>
+    <text x="130" y="316" text-anchor="middle" class="sub">chain 5</text>
+    <rect class="chain" x="50"  y="322" width="160" height="14" rx="2"/>
+    <text x="130" y="333" text-anchor="middle" class="sub">chain 6</text>
+    <rect class="chain" x="50"  y="339" width="160" height="14" rx="2"/>
+    <text x="130" y="350" text-anchor="middle" class="sub">chain 7</text>
+  </g>
+
+  <text x="130" y="372" text-anchor="middle" class="sub" font-style="italic">independent seeds &#183; pinned to threads</text>
+
+  <text x="245" y="278" text-anchor="middle" class="signal-em">each chain runs:</text>
+  <line class="arrow" x1="212" y1="285" x2="288" y2="285" marker-end="url(#arr2)"/>
+
+  <g>
+    <rect class="stepbox" x="350" y="218" width="240" height="28" rx="3"/>
+    <text x="470" y="237" text-anchor="middle" class="name">Init random B*-tree</text>
+    <line class="arrow" x1="470" y1="246" x2="470" y2="257" marker-end="url(#arr2)"/>
+
+    <rect class="stepbox" x="320" y="258" width="300" height="28" rx="3"/>
+    <text x="470" y="277" text-anchor="middle" class="name">Perturb &#183; swap | rotate | delete-insert</text>
+    <line class="arrow" x1="470" y1="286" x2="470" y2="297" marker-end="url(#arr2)"/>
+
+    <rect class="stepbox" x="350" y="298" width="240" height="28" rx="3"/>
+    <text x="470" y="317" text-anchor="middle" class="name">Pack &#183; contour scan, O(n&#178;)</text>
+    <line class="arrow" x1="470" y1="326" x2="470" y2="337" marker-end="url(#arr2)"/>
+
+    <rect class="equation" x="295" y="338" width="350" height="32" rx="3"/>
+    <text x="470" y="358" text-anchor="middle" class="name">Cost = &#945;&#183;Area + (1&#8722;&#945;)&#183;HPWL + &#955;<tspan baseline-shift="sub" font-size="9px">t</tspan>&#183;Timing + &#955;<tspan baseline-shift="sub" font-size="9px">c</tspan>&#183;Congestion</text>
+    <line class="arrow" x1="470" y1="370" x2="470" y2="381" marker-end="url(#arr2)"/>
+
+    <rect class="stepbox" x="295" y="382" width="350" height="28" rx="3"/>
+    <text x="470" y="401" text-anchor="middle" class="name">Metropolis: accept if &#916;C &#8804; 0  or  rand &lt; exp(&#8722;&#916;C / T)</text>
+    <line class="arrow" x1="470" y1="410" x2="470" y2="421" marker-end="url(#arr2)"/>
+
+    <rect class="stepbox" x="350" y="422" width="240" height="28" rx="3"/>
+    <text x="470" y="441" text-anchor="middle" class="name">Cool &#183; T &#8592; 0.85 &#183; T</text>
+
+    <path class="loopback" d="M 645 396 H 670 V 272 H 620" marker-end="url(#arr2m)"/>
+    <text x="675" y="332" class="signal" text-anchor="start">k&#183;n perturbations</text>
+    <text x="675" y="346" class="signal" text-anchor="start">per temperature</text>
+
+    <path class="loopback" d="M 350 436 H 295 V 272 H 320" marker-end="url(#arr2m)"/>
+    <text x="289" y="334" class="signal" text-anchor="end">until T &#8804; T_term</text>
+    <text x="289" y="348" class="signal" text-anchor="end">or reject &#8805; 99%</text>
+
+    <line class="arrow" x1="470" y1="450" x2="470" y2="488" marker-end="url(#arr2)"/>
+    <text x="478" y="466" class="signal-em">recover best snapshot</text>
+  </g>
+
+  <line class="divider" x1="30" y1="525" x2="730" y2="525"/>
+  <text x="40" y="544" class="stage">3 &#183; BEST-OF-N</text>
+
+  <g>
+    <rect class="stepbox" x="200" y="540" width="360" height="38" rx="3"/>
+    <text x="380" y="560" text-anchor="middle" class="name">Select chain with minimum cost</text>
+    <text x="380" y="573" text-anchor="middle" class="sub">parallel SA summary table &#183; mean / std-dev / min / max</text>
+  </g>
+
+  <line class="arrow" x1="380" y1="578" x2="380" y2="595" marker-end="url(#arr2)"/>
+
+  <line class="divider" x1="30" y1="595" x2="730" y2="595"/>
+
+  <text x="40" y="614" class="stage">4 &#183; OUTPUTS</text>
+
+  <g>
+    <rect class="filebox" x="50"  y="620" width="140" height="48" rx="3"/>
+    <text x="120" y="640" text-anchor="middle" class="name">.pl placement</text>
+    <text x="120" y="655" text-anchor="middle" class="sub">x &#183; y &#183; rotation per cell</text>
+  </g>
+  <g>
+    <rect class="filebox" x="205" y="620" width="180" height="48" rx="3"/>
+    <text x="295" y="640" text-anchor="middle" class="name">.result stats</text>
+    <text x="295" y="655" text-anchor="middle" class="sub">area &#183; HPWL &#183; timing &#183; runtime</text>
+  </g>
+  <g>
+    <rect class="filebox" x="400" y="620" width="160" height="48" rx="3"/>
+    <text x="480" y="640" text-anchor="middle" class="name">SVG floorplan</text>
+    <text x="480" y="655" text-anchor="middle" class="sub">visualization.rs &#183; per chain</text>
+  </g>
+  <g>
+    <rect class="filebox" x="575" y="620" width="140" height="48" rx="3"/>
+    <text x="645" y="640" text-anchor="middle" class="name">JSON summary</text>
+    <text x="645" y="655" text-anchor="middle" class="sub">all-chain metrics</text>
+  </g>
+
+  <text x="380" y="688" text-anchor="middle" class="sub" font-style="italic">validation.rs verifies no-overlap and bounds &#183; 5&#8211;8&#215; speedup vs single-thread on 8 cores</text>
+
+</svg>

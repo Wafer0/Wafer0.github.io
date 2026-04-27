@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifacts · ePortfolio</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header>
+    <a href="../index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="index.html" aria-current="page">Artifacts</a>
+        <a href="../reflection.html">Reflective essay</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Artifacts</h1>
+    <p class="lede">Placer, out-of-order CPU, FPGA accelerator, custom multiplier, and bare-metal STM32 firmware.</p>
+
+    <ul class="works">
+        <li>
+            <a href="placer.html">Artifact 1 — Advanced Standard-Cell Placer<br><small>Multi-threaded VLSI floorplanner in Rust: B*-tree representation, simulated annealing, and timing- and congestion-aware cost terms.</small></a>
+        </li>
+        <li>
+            <a href="tomasulo-cpu.html">Artifact 2 — Tomasulo Out-of-Order RISC-V CPU<br><small>Synthesizable RV32I CPU with register renaming, reservation stations, and a reorder buffer &mdash; taken from RTL through OpenLane to a Sky130 GDSII.</small></a>
+        </li>
+        <li>
+            <a href="polynomial-accelerator.html">Artifact 3 — Polynomial Evaluation Accelerator<br><small>SystemVerilog dataflow accelerator with five cooperating FSMs, dual-port coefficient memory, and 100% functional coverage against a C reference.</small></a>
+        </li>
+        <li>
+            <a href="dadda-multiplier.html">Artifact 4 — 6-Bit Dadda-Optimized Multiplier<br><small>ENEE640 static-CMOS multiplier: Dadda reduction, Verilog verification, and delay/power analysis; full write-up in Exam 1 report (PDF).</small></a>
+        </li>
+        <li>
+            <a href="stm32-mot.html">Artifact 5 — STM32 Bare-Metal Drivers (MoT)<br><small>ENEE440 STM32G491 &ldquo;Micro on Tether&rdquo;: register-level assembly drivers, serial test harness, and paired user + maintainer manuals on GitHub.</small></a>
+        </li>
+    </ul>
+</main>
+
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+</body>
+</html>

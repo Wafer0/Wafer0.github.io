@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6-Bit Dadda Multiplier · ePortfolio</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header>
+    <a href="../index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="index.html">Artifacts</a>
+        <a href="../reflection.html">Reflective essay</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+    <a href="index.html" class="back">&larr; Artifacts</a>
+    <h1>Artifact 4 &mdash; 6-Bit Dadda-Optimized Multiplier</h1>
+    <p class="lede">An ENEE640 (VLSI) project comparing multiplier architectures and delivering a static CMOS 6-bit Dadda tree with Verilog verification, schematic-driven layout, and a measured focus on worst-case delay and power.</p>
+
+    <div class="repo-card">
+        <a class="repo-cta" href="../media/docs/ENEE640_Exam1.pdf">Download full report (PDF) &rarr;</a>
+        <ul class="tech-stack">
+            <li>ENEE640</li>
+            <li>Dadda reduction tree</li>
+            <li>Static CMOS</li>
+            <li>Verilog modeling</li>
+            <li>Ripple-carry adder (final sum)</li>
+            <li>Power &amp; delay analysis</li>
+        </ul>
+        <p style="margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--muted);">
+            RTL, schematics, and optimization narrative are in the report. This course submission is not mirrored on GitHub.
+        </p>
+    </div>
+
+    <h2>Architecture</h2>
+    <figure class="diagram">
+        <img src="../media/diagrams/6bit_dadda_algorithm.png" alt="Hand-drawn 6-bit Dadda multiplier dataflow. Partial products from operands a5..a0 and b5..b0 form a diamond matrix (shorthand like 00 for a0 times b0). Reduction stages lower column height from 6 to 4 to 3 to 2 using grouped half adders and full adders (legend maps two operands to HA and three to FA). Dots and s or c labels show sums and carries between stages. The final two rows feed a ripple-carry adder labeled RCA producing the 12-bit product y11 through y0. A tally notes five half adders, fifteen full adders, and the 10-bit final combine.">
+        <figcaption>Dadda reduction schedule for the 6&times;6 multiplier: partial-product matrix, staged HA/FA compression, and final RCA &mdash; same structure detailed in the ENEE640 report.</figcaption>
+    </figure>
+
+    <h2>Highlights</h2>
+    <ul class="highlights">
+        <li><strong>Architecture choice:</strong> Dadda over Wallace and Vedic-style options for a better trade-off between reduction depth and implementation complexity in CMOS; fewer reduction stages than a comparable Wallace tree in this design space.</li>
+        <li><strong>Hierarchical design:</strong> Partial-product generation (AND array), dedicated Dadda reduction stages using half- and full-adders, and a final summation stage partitioned for debug and optimization.</li>
+        <li><strong>Final adder experiment:</strong> A carry-lookahead adder was prototyped for the last 10-bit combine, but measured delay and power favored a ripple-carry adder in this layout &mdash; a reminder that &ldquo;theoretically faster&rdquo; does not always win once wires and fan-out are real.</li>
+        <li><strong>Verification:</strong> Initial Verilog modeling and simulation to prove functional correctness before committing to full custom schematic flow.</li>
+        <li><strong>Motivation:</strong> Multipliers are a recurring bottleneck in neural-network accelerators; the report frames the design as a building block for that class of system.</li>
+    </ul>
+
+    <h2>Context &amp; reflection</h2>
+    <p>This was my ENEE640 Exam 1 deliverable: not just drawing a multiplier, but defending <em>why</em> this topology, how each block maps to transistors, and what the delay and power measurements say after optimization. The most valuable part of the write-up is the honest comparison between the CLA and RCA for the final combine &mdash; it forced me to reconcile textbook latency models with what the extracted layout actually did. That habit of trusting the meter over the napkin sketch is the same one I rely on in synthesis-heavy projects like the Tomasulo CPU and the standard-cell placer.</p>
+</main>
+
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+</body>
+</html>

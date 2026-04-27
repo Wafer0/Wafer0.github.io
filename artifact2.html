@@ -2,67 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tomasulo Out-of-Order RISC-V CPU · ePortfolio</title>
-<link rel="stylesheet" href="style.css">
+<meta http-equiv="refresh" content="0; url=artifacts/tomasulo-cpu.html">
+<link rel="canonical" href="artifacts/tomasulo-cpu.html">
+<title>Redirecting&hellip;</title>
+<script>location.replace("artifacts/tomasulo-cpu.html");</script>
 </head>
 <body>
-<header>
-    <a href="index.html" class="brand">ePortfolio</a>
-    <nav>
-        <a href="about.html">About</a>
-        <a href="artifacts.html" aria-current="page">Artifacts</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-</header>
-
-<main>
-    <a href="artifacts.html" class="back">&larr; Artifacts</a>
-    <h1>Artifact 2 &mdash; Tomasulo Out-of-Order RISC-V CPU</h1>
-    <p class="lede">A synthesizable RV32I CPU implementing Tomasulo&rsquo;s algorithm with register renaming, an 8-entry reservation station, and a 16-entry reorder buffer &mdash; taken from RTL through full ASIC place-and-route to a Sky130 GDSII.</p>
-
-    <div class="repo-card">
-        <a class="repo-cta" href="https://github.com/Wafer0/risk-v-32-bit-tomasulo-cpu">View on GitHub &rarr;</a>
-        <ul class="tech-stack">
-            <li>SystemVerilog</li>
-            <li>Yosys</li>
-            <li>OpenLane</li>
-            <li>Sky130 PDK</li>
-            <li>Icarus Verilog</li>
-            <li>Verible</li>
-            <li>KLayout</li>
-            <li>Docker</li>
-        </ul>
-        <p style="margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--muted);">
-            Companion repos:
-            <a href="https://github.com/Wafer0/risk-v-32-bit-inorder-5-stage-cpu">in-order 5-stage baseline</a>
-            &middot;
-            <a href="https://github.com/Wafer0/tomasulo_vs_inorder_cpu_analysis">IPC comparison &amp; report</a>
-        </p>
-    </div>
-
-    <h2>Architecture</h2>
-    <figure class="diagram">
-        <img src="media/tomasulo_architecture.svg" alt="Tomasulo CPU block diagram. Stage 1 fetch: pc_gen, instr_mem, IFQ FIFO. Stage 2 issue and rename: decoder, dispatch, RAT (32 entries), Register File (32x32), ROB (16 entries), and an 8-slot Reservation Station. Stage 3 execute: ALU, branch unit, and a stubbed load-store unit. The Common Data Bus is shown as a vertical bar to the right with arbiter priority Branch > ALU > LSU; it broadcasts results back to the ROB (write), the RS (snoop fills vj/vk), and clears matching RAT entries. A misprediction loop returns the corrected PC from the branch unit to pc_gen. Stage 4 commit: ROB head writes commit_rd and commit_value to the Register File when valid.">
-        <figcaption>Five-stage Tomasulo pipeline mapped to <code>rtl/top.sv</code>: fetch, issue/rename, execute, write-back via the Common Data Bus, and in-order commit. Dashed arrows are CDB broadcast and misprediction recovery.</figcaption>
-    </figure>
-
-    <h2>Highlights</h2>
-    <ul class="highlights">
-        <li>Full out-of-order pipeline: Fetch &rarr; Decode &rarr; Dispatch &rarr; Issue &rarr; Execute &rarr; Complete &rarr; Commit, across 17 SystemVerilog modules.</li>
-        <li>Register Alias Table for renaming, reservation stations with Common Data Bus snooping, and a reorder buffer for in-order commit and precise exceptions.</li>
-        <li>Speculative execution with branch-misprediction recovery; supports the full RV32I integer, load/store, branch, and jump ISA.</li>
-        <li>15 module-level unit tests plus six system test programs (arithmetic, logic, shifts, memory ops, branches, jumps) all passing.</li>
-        <li>36% higher operating frequency (69.7 MHz vs. 51.2 MHz) and 40&ndash;150% IPC improvement over a deliberately-built in-order 5-stage baseline.</li>
-        <li>Synthesized to 1,652 standard cells with zero DRC violations on Sky130 130 nm; final GDSII produced through the OpenLane flow.</li>
-    </ul>
-
-    <h2>Context &amp; reflection</h2>
-    <p>This was the central project of my graduate-level digital-design coursework. Rather than stop at simulation, I committed to taking the design through the full ASIC flow: SystemVerilog RTL, unit and system verification, Yosys synthesis, OpenLane place-and-route, and Sky130 GDSII signoff in KLayout. I deliberately built an in-order 5-stage RISC-V CPU first so I would have a fair, head-to-head IPC and frequency baseline to compare the Tomasulo machine against. The companion analysis repository contains the benchmarking script, the IPC tables, and a LaTeX-generated report that turns those measurements into a written argument for when out-of-order execution is worth its complexity.</p>
-    <p>This artifact is the closest thing I have to a complete portrait of the engineer I want to be. It shows that I can hold a complex system in my head &mdash; register renaming, CDB arbitration, speculative recovery, precise commit &mdash; while also paying the small, unglamorous taxes that real hardware design requires: synchronous reset throughout, a unit test for every module, a linter in CI, and timing closure before declaring the design done. It also reflects how I prefer to work: build the simpler thing first (the in-order pipeline), then justify the added complexity of the out-of-order machine with measured numbers rather than intuition. Doing place-and-route through OpenLane and inspecting the final GDSII in KLayout was the moment the abstractions of my coursework became something physical, and it cemented my decision to pursue VLSI and computer architecture professionally.</p>
-</main>
-
-<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
-<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+<p>Moved to <a href="artifacts/tomasulo-cpu.html">Artifact 2 — Tomasulo CPU</a>.</p>
 </body>
 </html>

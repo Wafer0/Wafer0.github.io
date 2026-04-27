@@ -3,27 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ePortfolio</title>
+<title>Andreas Nikolaos Tzitzikas &middot; ePortfolio</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
     <a href="index.html" class="brand">ePortfolio</a>
     <nav>
-        <a href="about.html">About</a>
-        <a href="artifacts.html">Artifacts</a>
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="artifacts/">Artifacts</a>
+        <a href="reflection.html">Reflective essay</a>
         <a href="contact.html">Contact</a>
     </nav>
 </header>
 
 <main>
-    <h1>[PLACEHOLDER: your name]</h1>
-    <p class="lede">[PLACEHOLDER: short tagline — e.g. program, year, focus]</p>
+    <h1>Andreas Nikolaos Tzitzikas</h1>
+    <p class="lede">Senior Computer Engineering student at the University of Maryland, College Park, specializing in ASIC/FPGA design and computer architecture.</p>
 
-    <p>[PLACEHOLDER: one short intro paragraph about this portfolio.]</p>
+    <h2 id="welcome">Welcome</h2>
+    <p>Welcome to my ePortfolio. It collects engineering work and short write-ups so you can see how I approach complex systems, from algorithms and RTL to documentation and tapeout. Below are a brief video, my background and roles at UMD, and how I like to work. The <a href="artifacts/">Artifacts</a> section has five projects: a standard-cell placer, a Tomasulo RISC-V CPU through silicon, a polynomial accelerator, a 6-bit Dadda multiplier study, and bare-metal STM32 firmware with manuals. The <a href="reflection.html">Reflective essay</a> connects that work in one place. <a href="contact.html">Contact</a> has my email and LinkedIn.</p>
+
+    <h2 id="video">Welcome video</h2>
+    <div class="embed">
+        <iframe src="about:blank" title="Welcome video introduction" allowfullscreen loading="lazy"></iframe>
+        <small>After uploading the intro to YouTube or Google Drive, paste the embed URL into <code>iframe src</code> in <code>index.html</code>.</small>
+    </div>
+
+    <h2 id="background">Background &amp; roles</h2>
+    <p>Originally from Athens, Greece, I am completing my B.S. in Computer Engineering at Maryland with a focus on ASIC/FPGA and architecture. I serve as Technical Coordinator for the Electronics Prototyping Lab at Terrapin Works, as an Undergraduate Teaching Fellow for Digital Circuits and Systems (ENEE205), and as a Resident Assistant at Easton Hall. I will begin my Ph.D. at UMD next semester, concentrating on hardware security and multidimensional architectures; this summer I join NVIDIA as an ASIC Floorplanning Intern. My long-term aim is to push high-performance computing forward through novel architecture and strong backend implementation. Outside the lab, I follow motorsports closely and am training for my private pilot&rsquo;s license&mdash;another way I engage with precision, systems, and risk management.</p>
+
+    <h2 id="ethos">How I work</h2>
+    <p>I assume someone else may inherit whatever I ship: run the tests, show the numbers, and keep docs aligned with the repo. If I cannot explain a trade-off, I go back until I can. That applies whether the deliverable is a placer, an SoC block, or firmware.</p>
 </main>
 
-<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
 <script>document.getElementById("y").textContent=new Date().getFullYear()</script>
 </body>
 </html>

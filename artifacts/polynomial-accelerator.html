@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polynomial Evaluation Accelerator · ePortfolio</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header>
+    <a href="../index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="index.html">Artifacts</a>
+        <a href="../reflection.html">Reflective essay</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+    <a href="index.html" class="back">&larr; Artifacts</a>
+    <h1>Artifact 3 &mdash; Polynomial Evaluation Accelerator</h1>
+    <p class="lede">An ENEE408C team project (Fall 2025) implementing a Polynomial Evaluation Accelerator as both a LIDE-C software actor and a LIDE-V Verilog hardware actor, then exploring four hardware variants synthesized on a Zynq UltraScale+ FPGA.</p>
+
+    <div class="repo-card">
+        <a class="repo-cta" href="https://github.com/Wafer0/ENEE408C">View on GitHub &rarr;</a>
+        <ul class="tech-stack">
+            <li>SystemVerilog / Verilog</li>
+            <li>LIDE-V (dataflow)</li>
+            <li>LIDE-C / C reference</li>
+            <li>AMD Vivado</li>
+            <li>Zynq UltraScale+ (xczu5ev)</li>
+            <li>Horner&rsquo;s method</li>
+            <li>Kogge-Stone adder</li>
+            <li>dxtest framework</li>
+        </ul>
+        <p style="margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--muted);">
+            <a href="../media/docs/pea_report.pdf">Download the full report (PDF)</a>
+            &middot; ENEE408C, Prof. Shuvra S. Bhattacharyya, December 2025
+            &middot; Team: Nicole Baker, Jeremy Bloom, Graham Rogers, Andreas Tzitzikas
+        </p>
+    </div>
+
+    <h2>My contribution</h2>
+    <p>I owned the initial Verilog architecture (&ldquo;Design One&rdquo;) and the synthesis pipeline. After the team co-designed the actor&rsquo;s dataflow table and FSM topology, I implemented the hardware so that each Verilog module mapped one-to-one onto a function in the C reference &mdash; a deliberate decision that let us run the same test vectors through both implementations and validate the hardware against the software for free. I built the synthesis flow in Vivado, wrote in-depth module documentation, and then helped my teammates extend my base into Designs 2 (Horner&rsquo;s method), 3 (Kogge-Stone adder), and 4 (single-cycle instruction decode). On the report&rsquo;s Pareto plot of throughput vs. utilization, Design One ended up being the winning design.</p>
+
+    <h2>Architecture</h2>
+    <figure class="diagram">
+        <img src="../media/diagrams/pea_architecture.png" alt="PEA Verilog architecture: pea_top wraps a controller FSM that dispatches to STP/EVP/EVB/RST modules, sharing a dual-port coefficient memory feeding a sequential polynomial evaluator and an iterative power calculator.">
+        <figcaption>Verilog architecture of the PEA. Source: project report (Fig. 1).</figcaption>
+    </figure>
+
+    <h2>Highlights</h2>
+    <ul class="highlights">
+        <li>Dataflow architecture with five cooperating finite state machines (controller + STP/EVP/EVB/RST + polynomial evaluator + power calculator) coordinating handshaking and resource sharing across nine Verilog modules.</li>
+        <li>Centralized <code>pea_controller</code> FSM with five states (LOAD_INSTRUCTION, EXECUTE_STP/EVP/EVB, RST) decodes the opcode, validates parameters, and dispatches start signals to the operation modules.</li>
+        <li>Dual-port coefficient memory holding 8 vectors &times; 11 coefficients of 16-bit signed values, with initialization tracking and concurrent read/write ports for back-pressure-free batch evaluation.</li>
+        <li>Polynomial evaluator with a six-state pipeline (IDLE, WAIT_POWER, MULTIPLY, ACCUMULATE, NEXT_TERM, DONE) coordinating with a three-state iterative <code>power_calc</code> module.</li>
+        <li>Comprehensive testbench validated against the C reference using the <code>dxtest</code> framework: STP / EVP / EVB / RST unit tests plus multi-instruction sequences, covering edge cases (degree 0, max degree 10, negative coefficients) and every error code.</li>
+        <li>Pareto analysis on the Zynq UltraScale+ <code>xczu5ev-fbvb900-2-i</code>: Design One delivers <strong>9.42 MIPS at F<sub>max</sub> = 690 MHz</strong> with 218-unit utilization &mdash; the best throughput-per-resource of all four explored designs.</li>
+    </ul>
+
+    <h2>Context &amp; reflection</h2>
+    <p>This was the capstone project for ENEE408C in Fall 2025: a four-person team building a Polynomial Evaluation Accelerator first as a LIDE-C software actor and then as a LIDE-V hardware actor, with a written engineering report comparing four hardware variants on a Zynq UltraScale+ FPGA. My specific responsibility was the initial Verilog architecture &mdash; the controller FSM, the per-instruction operation modules, the dual-port coefficient memory, and the polynomial evaluator/power-calculator pair &mdash; along with the synthesis pipeline in Vivado and the unified test harness that lets the same input vectors validate both the C and Verilog implementations. After that base was working, my teammates each layered an alternative on top: Horner&rsquo;s method (Design 2), a structural Kogge-Stone adder (Design 3), and a packed single-cycle instruction decoder (Design 4). The four designs gave us a real Pareto frontier to analyze in the report.</p>
+    <p>What stuck with me is the shared testbench and the Vivado results. Matching Verilog modules to the C reference and reusing the same vectors let everyone try Horner, Kogge-Stone, and packed decode without rewriting verification. The alternatives looked better on paper; after implementation, Design One still led on throughput per LUT because of a shorter critical path. I have carried that habit forward: prove the baseline on real tools before chasing a more clever architecture.</p>
+</main>
+
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+</body>
+</html>

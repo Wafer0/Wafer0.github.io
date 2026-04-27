@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STM32 Bare-Metal Drivers (MoT) · ePortfolio</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header>
+    <a href="../index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="index.html">Artifacts</a>
+        <a href="../reflection.html">Reflective essay</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+    <a href="index.html" class="back">&larr; Artifacts</a>
+    <h1>Artifact 5 &mdash; STM32G491 Bare-Metal Drivers (Micro on Tether)</h1>
+    <p class="lede">An ENEE440 (Spring 2025) embedded systems project: a &ldquo;Micro on Tether&rdquo; firmware stack on the STM32G491 Nucleo, built from scratch in C and assembly with register-level peripheral drivers, a serial command protocol, PC-side test automation, and full user and maintainer documentation.</p>
+
+    <div class="repo-card">
+        <a class="repo-cta" href="https://github.com/Wafer0/ENEE440">View on GitHub &rarr;</a>
+        <ul class="tech-stack">
+            <li>STM32G491RE</li>
+            <li>ARM GCC / STM32CubeIDE</li>
+            <li>Assembly (drivers)</li>
+            <li>C (application)</li>
+            <li>USART / LPUART</li>
+            <li>GPIO, DAC, ADC, TIM2</li>
+            <li>SPI + W25Q flash</li>
+            <li>PC test harness (testterm)</li>
+        </ul>
+        <p style="margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--muted);">
+            User and maintainer PDFs are linked in <strong>Documentation</strong> below (same files as <code>ENEE440S25_PROJECT/Documentation/</code> on GitHub).
+        </p>
+    </div>
+
+    <h2>Documentation</h2>
+    <p>Course deliverables include a technical user manual and a maintainer document; both live in the repository and open as PDFs.</p>
+    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem; margin: 1rem 0 2rem;">
+        <a class="repo-cta" href="https://raw.githubusercontent.com/Wafer0/ENEE440/main/ENEE440S25_PROJECT/Documentation/User_Manual.pdf">User Manual (PDF) &rarr;</a>
+        <a class="repo-cta" href="https://raw.githubusercontent.com/Wafer0/ENEE440/main/ENEE440S25_PROJECT/Documentation/Maintainer_Document.pdf">Maintainer Document (PDF) &rarr;</a>
+    </div>
+    <p style="margin: 0 0 2rem; font-size: 0.85rem; color: var(--muted);">
+        <a href="https://github.com/Wafer0/ENEE440/blob/main/ENEE440S25_PROJECT/README.txt">Project README.txt</a> (repo navigation, build, and test steps)
+        &middot;
+        <a href="https://github.com/Wafer0/ENEE440/tree/main/ENEE440S25_PROJECT/Documentation">Documentation folder on GitHub</a>
+        <br>
+        Local mirrors on this site:
+        <a href="../media/docs/User_Manual.pdf">User Manual</a>
+        &middot;
+        <a href="../media/docs/Maintainer_Document.pdf">Maintainer Document</a>
+    </p>
+
+    <h2>Highlights</h2>
+    <ul class="highlights">
+        <li><strong>No HAL smokescreen:</strong> Peripheral bring-up uses dedicated headers and assembly sources per block (GPIO, RCC, USART, timers, SPI, flash, etc.) so every register write is visible in the repo.</li>
+        <li><strong>Device-oriented firmware:</strong> <code>MoT_devices/</code> splits drivers by subsystem (GPIO, DAC, ADC, TIM2/PWM, SPI, external W25QXX flash, EXTI, plus provided LED/button devices) with a small MoT command dispatcher in <code>MoT_main03.c</code>.</li>
+        <li><strong>Repeatable PC tests:</strong> <code>testterm.exe</code> drives scripted serial sessions; the repo ships demo scripts and golden <code>*_result.txt</code> captures for acceptance-style regression.</li>
+        <li><strong>Documentation as deliverable:</strong> A technical <strong>User Manual</strong> for operators and a <strong>Maintainer Document</strong> for architecture, design choices, and flow &mdash; written to match how the code is actually organized under <code>ENEE440S25_PROJECT/</code>.</li>
+        <li><strong>Tooling narrative:</strong> README covers Eclipse import, debug launch, COM-port test procedure, and per-device demo expectations (scope where needed).</li>
+    </ul>
+
+    <h2>Context &amp; reflection</h2>
+    <p>The course required a working product: serial protocol, several peripherals, and scripts a new user could step through. Writing the manuals next to the firmware kept the command list and directory layout honest; a vague section usually meant the code boundary was vague too. It is a small-memory, assembly-heavy stack compared with my RTL projects, and it was good practice for documentation meant for someone else.</p>
+</main>
+
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+</body>
+</html>

@@ -2,58 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Advanced Standard-Cell Placer · ePortfolio</title>
-<link rel="stylesheet" href="style.css">
+<meta http-equiv="refresh" content="0; url=artifacts/placer.html">
+<link rel="canonical" href="artifacts/placer.html">
+<title>Redirecting&hellip;</title>
+<script>location.replace("artifacts/placer.html");</script>
 </head>
 <body>
-<header>
-    <a href="index.html" class="brand">ePortfolio</a>
-    <nav>
-        <a href="about.html">About</a>
-        <a href="artifacts.html" aria-current="page">Artifacts</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-</header>
-
-<main>
-    <a href="artifacts.html" class="back">&larr; Artifacts</a>
-    <h1>Artifact 1 &mdash; Advanced Standard-Cell Placer</h1>
-    <p class="lede">A multi-threaded VLSI floorplanner written in Rust that uses a B*-tree representation and simulated annealing to place standard cells, with optional timing- and congestion-aware cost terms.</p>
-
-    <div class="repo-card">
-        <a class="repo-cta" href="https://github.com/Wafer0/Standard-Cell-Placer">View on GitHub &rarr;</a>
-        <ul class="tech-stack">
-            <li>Rust</li>
-            <li>Rayon (parallel SA)</li>
-            <li>Simulated annealing</li>
-            <li>B*-tree</li>
-            <li>SVG / JSON output</li>
-            <li>MCNC benchmarks</li>
-        </ul>
-    </div>
-
-    <h2>Architecture</h2>
-    <figure class="diagram">
-        <img src="media/placer_architecture.svg" alt="Standard-cell placer flow diagram. Inputs are MCNC .blocks and .nets files, parsed into a B*-tree via BTree::new, read, and init. The Parallel Simulated Annealing container shows eight independent SA chains running concurrently via Rayon; each chain executes the inner loop: init random B*-tree, perturb (swap, rotate, or delete-insert), pack via O(n^2) contour scan, evaluate the multi-objective cost function (alpha times Area plus 1-alpha times HPWL plus lambda_t times Timing plus lambda_c times Congestion), accept or reject by the Metropolis criterion, then cool T to 0.85 T. An inner loop runs k times n perturbations per temperature; the outer loop continues until T is below T_term or the rejection rate is at least 99 percent. The best-of-N stage selects the chain with minimum cost. Outputs are placement files, statistics, SVG floorplans, and a JSON summary; validation.rs verifies no-overlap and bounds.">
-        <figcaption>End-to-end flow of the placer: MCNC inputs &rarr; B*-tree initialization &rarr; eight Rayon-parallel simulated-annealing chains, each with its own temperature loop and multi-objective cost &rarr; best-of-N selection &rarr; validated placement, SVG, and JSON outputs.</figcaption>
-    </figure>
-
-    <h2>Highlights</h2>
-    <ul class="highlights">
-        <li>B*-tree floorplan representation with O(n<sup>2</sup>) packing via a contour structure, following Chang et al. (DAC 2000).</li>
-        <li>Multi-objective cost function: area + half-perimeter wirelength, with optional timing (Elmore-delay model) and congestion (grid-based demand) terms.</li>
-        <li>Multi-threaded simulated annealing using Rayon &mdash; eight independent runs with best-of-N selection, yielding 5&ndash;8&times; speedup and 8&ndash;12% better solutions than a single run.</li>
-        <li>Validated on the MCNC B10&ndash;B300 benchmarks with 89&ndash;95% area utilization and zero geometric overlaps.</li>
-        <li>Modular binaries: a placer, a standalone validator, an SVG visualizer, and a benchmark harness with JSON summaries for downstream EDA integration.</li>
-    </ul>
-
-    <h2>Context &amp; reflection</h2>
-    <p>I built this placer as an EDA-tooling deep-dive: rather than treat place-and-route as a black box, I wanted to write the optimizer myself and understand <em>why</em> a B*-tree is the right encoding for non-slicing floorplans. The codebase implements the classic Chang/Wong B*-tree representation with simulated annealing, then extends the cost function with a timing-aware term (Elmore-delay propagation along critical paths) and a congestion-aware term (grid-based demand tracking) and parallelizes the search with Rayon to overcome local optima. It targets the MCNC benchmarks B10 through B300 and produces validated, SVG-visualized floorplans alongside JSON summaries that can be consumed by other tools.</p>
-    <p>This artifact demonstrates that I can move comfortably between algorithmic theory and production-quality systems engineering. On the algorithm side, I had to translate dense conference papers into working code &mdash; contour-tracking packing, geometric cooling schedules, the Metropolis acceptance criterion, and rejection-rate termination. On the systems side, I made deliberate engineering choices: Rust for memory safety and speed, Rayon for embarrassingly parallel best-of-N runs, separate binaries for placement / validation / visualization / benchmarking, and a clean specification of the input format. It is also the project I most often reach for when I want to explain my approach to writing software: read the literature, write the smallest correct version, validate it geometrically, and only then optimize. It connects directly to the VLSI and computer-architecture work I want to do professionally, where the line between "algorithm" and "tool" is exactly the line this project sits on.</p>
-</main>
-
-<footer>&copy; <span id="y"></span> [PLACEHOLDER: your name]</footer>
-<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+<p>Moved to <a href="artifacts/placer.html">Artifact 1 — Standard-Cell Placer</a>.</p>
 </body>
 </html>

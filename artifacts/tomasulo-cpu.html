@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tomasulo Out-of-Order RISC-V CPU · ePortfolio</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header>
+    <a href="../index.html" class="brand">ePortfolio</a>
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="index.html">Artifacts</a>
+        <a href="../reflection.html">Reflective essay</a>
+        <a href="../contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+    <a href="index.html" class="back">&larr; Artifacts</a>
+    <h1>Artifact 2 &mdash; Tomasulo Out-of-Order RISC-V CPU</h1>
+    <p class="lede">A synthesizable RV32I CPU implementing Tomasulo&rsquo;s algorithm with register renaming, an 8-entry reservation station, and a 16-entry reorder buffer &mdash; taken from RTL through full ASIC place-and-route to a Sky130 GDSII.</p>
+
+    <div class="repo-card">
+        <a class="repo-cta" href="https://github.com/Wafer0/risk-v-32-bit-tomasulo-cpu">View on GitHub &rarr;</a>
+        <ul class="tech-stack">
+            <li>SystemVerilog</li>
+            <li>Yosys</li>
+            <li>OpenLane</li>
+            <li>Sky130 PDK</li>
+            <li>Icarus Verilog</li>
+            <li>Verible</li>
+            <li>KLayout</li>
+            <li>Docker</li>
+        </ul>
+        <p style="margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--muted);">
+            Companion repos:
+            <a href="https://github.com/Wafer0/risk-v-32-bit-inorder-5-stage-cpu">in-order 5-stage baseline</a>
+            &middot;
+            <a href="https://github.com/Wafer0/tomasulo_vs_inorder_cpu_analysis">IPC comparison &amp; report</a>
+        </p>
+    </div>
+
+    <h2>Architecture</h2>
+    <figure class="diagram">
+        <img src="../media/diagrams/tomasulo.svg" alt="Tomasulo RV32I CPU block diagram matching rtl/top.sv. The 8-entry Instruction Fetch Queue feeds an Issue/Decoder + Dispatch unit, which uses the 32-entry RAT to rename sources, reads the 32x32 Register File, and allocates one of 16 ROB entries plus one of 8 unified Reservation Station slots. The RS table shows all eight slots with the per-slot fields (Busy, Op, Vj, Vk, Qj, Qk, ROB-tag dest, imm) and a sample dependency chain ADD/SUB/AND/XOR/BEQ. Ready slots issue to the ALU (ADD, SUB, AND, OR, XOR) for R/I-type ops or to the Branch Unit (BEQ, BNE, BLT, BGE, JAL, JALR) for B/J-type ops; the Load/Store Unit and Memory are drawn as ghosted stubs because cdb_inst.lsu_req is tied to zero in this build. The Common Data Bus runs as a horizontal bar across the bottom, arbitrates Branch over ALU over LSU, and broadcasts {cdb_valid, cdb_tag, cdb_value} back to the RS (snoop, fills Vj and Vk), to the RAT (clears matching renames), and to the ROB (writes value, sets ready). A separate dashed gray commit path runs above the dispatch bus from the ROB head to the Register File, carrying commit_rd and commit_value in order. A second dashed feedback loop returns branch mispredict and correct_pc from the Branch Unit to pc_gen.">
+        <figcaption>Pipeline mapped to <code>rtl/top.sv</code>: fetch &rarr; issue / rename via RAT &rarr; allocate ROB and unified 8-slot RS &rarr; dispatch to ALU or Branch Unit &rarr; write-back via the Common Data Bus &rarr; in-order commit from the ROB to the register file. Blue dashed arrows are CDB broadcasts and the mispredict redirect; the gray dashed arrow is the in-order commit path.</figcaption>
+    </figure>
+
+    <h2>Highlights</h2>
+    <ul class="highlights">
+        <li>Full out-of-order pipeline: Fetch &rarr; Decode &rarr; Dispatch &rarr; Issue &rarr; Execute &rarr; Complete &rarr; Commit, across 17 SystemVerilog modules.</li>
+        <li>Register Alias Table for renaming, reservation stations with Common Data Bus snooping, and a reorder buffer for in-order commit and precise exceptions.</li>
+        <li>Speculative execution with branch-misprediction recovery; supports the full RV32I integer, load/store, branch, and jump ISA.</li>
+        <li>15 module-level unit tests plus six system test programs (arithmetic, logic, shifts, memory ops, branches, jumps) all passing.</li>
+        <li>36% higher operating frequency (69.7 MHz vs. 51.2 MHz) and 40&ndash;150% IPC improvement over a deliberately-built in-order 5-stage baseline.</li>
+        <li>Synthesized to 1,652 standard cells with zero DRC violations on Sky130 130 nm; final GDSII produced through the OpenLane flow.</li>
+    </ul>
+
+    <h2>Context &amp; reflection</h2>
+    <p>This was the central project of my graduate-level digital-design coursework. Rather than stop at simulation, I committed to taking the design through the full ASIC flow: SystemVerilog RTL, unit and system verification, Yosys synthesis, OpenLane place-and-route, and Sky130 GDSII signoff in KLayout. I deliberately built an in-order 5-stage RISC-V CPU first so I would have a fair, head-to-head IPC and frequency baseline to compare the Tomasulo machine against. The companion analysis repository contains the benchmarking script, the IPC tables, and a LaTeX-generated report that turns those measurements into a written argument for when out-of-order execution is worth its complexity.</p>
+    <p>This CPU matters to me because it is the first time I closed a full ASIC flow myself: RTL, tests, Yosys and OpenLane, and a clean Sky130 GDSII in KLayout. The in-order five-stage core I built earlier is still the IPC baseline in the companion repo. The Tomasulo design is where rename, the CDB, and in-order commit had to stay correct under real constraints. Seeing the layout on silicon was more convincing than any lecture slide.</p>
+</main>
+
+<footer>&copy; <span id="y"></span> Andreas Nikolaos Tzitzikas</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
+</body>
+</html>

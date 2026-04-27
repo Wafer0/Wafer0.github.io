@@ -1,48 +1,41 @@
 # Wafer0.github.io
 
-Minimal static ePortfolio for a Computer Engineering student. Plain HTML + one
-small CSS file. No build step, no dependencies.
+Static ePortfolio (HTML + CSS) for GitHub Pages at repo root.
 
-## Files
+## Site map
+
+| URL | File |
+|-----|------|
+| `/` | `index.html` — welcome, video, background, how I work |
+| `/artifacts/` | `artifacts/index.html` — list of five projects |
+| `/artifacts/placer.html` | Standard-cell placer |
+| `/artifacts/tomasulo-cpu.html` | Tomasulo RISC-V CPU |
+| `/artifacts/polynomial-accelerator.html` | Polynomial accelerator |
+| `/artifacts/dadda-multiplier.html` | 6-bit Dadda multiplier |
+| `/artifacts/stm32-mot.html` | STM32 MoT |
+| `/reflection.html` | Reflective essay |
+| `/contact.html` | Contact |
+
+**Redirects (old links):** `artifacts.html` → `artifacts/`; `artifact1.html` … `artifact5.html` → matching page under `artifacts/`; `about.html` → `index.html`.
+
+## Repo layout
 
 ```
-index.html      Home
-about.html      Bio + ethos
-artifacts.html  Welcome video + list of artifacts
-artifact1.html  Artifact 1 (Google Doc/Slides iframe)
-artifact2.html  Artifact 2
-artifact3.html  Artifact 3
-contact.html    Email, LinkedIn, GitHub
-style.css       Shared stylesheet
+index.html, contact.html, reflection.html, style.css, robots.txt
+artifacts.html, about.html, artifact[1-5].html   # thin redirects only
+artifacts/          # index + one HTML per project
+media/diagrams/   # figures
+media/docs/       # PDFs
 ```
 
 ## Deploy
 
-```bash
-git add .
-git commit -m "Initial ePortfolio"
-git push origin main
-```
+Push to `main`; enable **Pages** from root.
 
-Then **Settings → Pages → Deploy from `main` / root** on GitHub.
+## Maintenance
 
-## Embeds
-
-Each iframe has `src="about:blank"`. Replace it with:
-
-- **YouTube** — `https://www.youtube.com/embed/VIDEO_ID`
-- **Google Doc** — `File → Share → Publish to web → Embed`
-- **Google Slides** — same menu
-
-The grey placeholder disappears once a real URL is in place.
-
-## Placeholders to replace
-
-Every unfilled field is marked `[PLACEHOLDER: ...]`. To find them all:
+Search the tree for unfinished notes if you add any:
 
 ```bash
-grep -rn "PLACEHOLDER" .
+grep -rn "FIXME\\|TODO\\|TBD" .
 ```
-
-The only non-placeholder external link is `github.com/Wafer0`, derived from
-the repo name — update it if your GitHub username differs.

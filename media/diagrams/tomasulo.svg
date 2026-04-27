@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 880" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Tomasulo Out-of-Order RV32I CPU - block architecture</title>
+  <desc id="d">RV32I Tomasulo CPU mapped to rtl/top.sv. An 8-entry instruction-fetch queue feeds Issue/Decoder + Dispatch which renames sources via the 32-entry RAT, reads the 32x32 register file, and allocates one of 16 reorder-buffer entries plus one of 8 unified reservation-station slots. The RS dispatches a ready slot to the ALU (ADD/SUB/AND/OR/XOR) when opcode is R/I-type, or to the Branch Unit (BEQ/BNE/BLT/BGE/JAL/JALR) when opcode is B/J-type; the LSU is stubbed in this build (lsu_req tied to 0 in cdb_inst). The Common Data Bus arbitrates Branch &gt; ALU &gt; LSU and broadcasts {cdb_valid, cdb_tag, cdb_value} back to RS slots (snoop, fills Vj/Vk), to the RAT (clears matching renames), and to the ROB (writes value, marks ready). The ROB then commits in-order to the register file; mispredicted branches steer the PC and flush in-flight state.</desc>
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#000"/>
+    </marker>
+    <marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f3d6b"/>
+    </marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title    { font-size: 18px; font-weight: 700; fill: #111; }
+    .subtitle { font-size: 11px; fill: #555; font-style: italic; }
+    .name     { font-size: 12.5px; font-weight: 700; fill: #111; }
+    .nameSub  { font-size: 10px; fill: #444; font-style: italic; }
+    .nameGh   { font-size: 12.5px; font-weight: 700; fill: #888; font-style: italic; }
+    .nameSubG { font-size: 10px; fill: #888; font-style: italic; }
+    .head     { font-size: 10.5px; font-weight: 700; fill: #111; }
+    .cell     { font-size: 9.5px; fill: #111; }
+    .cellMt   { font-size: 9.5px; fill: #888; font-style: italic; }
+    .lbl      { font-size: 10px; fill: #333; }
+    .lblBold  { font-size: 10.5px; font-weight: 700; fill: #1f3d6b; }
+    .lblCom   { font-size: 10.5px; font-weight: 700; fill: #555; }
+    .cdbTxt   { font-size: 17px; font-weight: 700; fill: #fff; letter-spacing: 0.10em; }
+    .cdbSub   { font-size: 11px; fill: #fff; opacity: 0.92; }
+    .logic    { fill: #cfe2f3; stroke: #000; stroke-width: 1; }
+    .exec     { fill: #d9ead3; stroke: #000; stroke-width: 1; }
+    .execGh   { fill: #f4f4f4; stroke: #999; stroke-width: 1; stroke-dasharray: 4 3; }
+    .reg      { fill: #ececec; stroke: #000; stroke-width: 1; }
+    .mem      { fill: #d0d0d0; stroke: #000; stroke-width: 1; }
+    .memGh    { fill: #f4f4f4; stroke: #999; stroke-width: 1; stroke-dasharray: 4 3; }
+    .headRow  { fill: #b6d7eb; stroke: #000; stroke-width: 1; }
+    .headRowO { fill: #fbcaaf; stroke: #000; stroke-width: 1; }
+    .headRowG { fill: #d4d4d4; stroke: #000; stroke-width: 1; }
+    .cdb      { fill: #1f3d6b; stroke: #000; stroke-width: 2; }
+    .grid     { stroke: #000; stroke-width: 0.5; opacity: 0.55; }
+    .arrow    { fill: none; stroke: #000; stroke-width: 1.5; }
+    .arrowTh  { fill: none; stroke: #000; stroke-width: 2; }
+    .feedback { fill: none; stroke: #1f3d6b; stroke-width: 1.8; stroke-dasharray: 6 4; }
+    .commit   { fill: none; stroke: #555; stroke-width: 2; stroke-dasharray: 8 3; }
+    .rail     { stroke: #000; stroke-width: 1.2; }
+  </style>
+
+  <!-- ============ TITLE ============ -->
+  <text x="620" y="24" text-anchor="middle" class="title">Tomasulo Out-of-Order RV32I CPU  -  block architecture</text>
+  <text x="620" y="44" text-anchor="middle" class="subtitle">matches rtl/top.sv  -  8-slot unified RS  -  16-entry ROB  -  32-entry RAT  -  ALU + Branch Unit (LSU stubbed)  -  Sky130 ASIC flow</text>
+
+  <!-- ============ (1) INSTRUCTION QUEUE ============ -->
+  <rect class="logic" x="420" y="64" width="400" height="42" rx="3"/>
+  <text x="620" y="84" text-anchor="middle" class="name">Instruction Queue (IFQ)</text>
+  <text x="620" y="99" text-anchor="middle" class="nameSub">8-entry FIFO from instr_mem  -  {pc, instruction}</text>
+
+  <line class="arrow" x1="620" y1="106" x2="620" y2="123" marker-end="url(#ar)"/>
+
+  <!-- ============ (2) ISSUE / DECODER + DISPATCH ============ -->
+  <rect class="logic" x="420" y="124" width="400" height="42" rx="3"/>
+  <text x="620" y="144" text-anchor="middle" class="name">Issue / Decoder + Dispatch</text>
+  <text x="620" y="159" text-anchor="middle" class="nameSub">register rename via RAT  -  allocate ROB tag + RS slot  -  read regfile</text>
+
+  <!-- arrow from Issue down to bus rail (long, spans commit channel) -->
+  <line class="arrow" x1="620" y1="166" x2="620" y2="220" marker-end="url(#ar)"/>
+
+  <!-- ============ COMMIT CHANNEL (above bus rail, dedicated band) ============ -->
+  <text x="620" y="186" text-anchor="middle" class="lblCom">ROB head  &#8594;  RegFile     commit_rd, commit_value  (in-order, one per cycle)</text>
+  <!-- Commit path: ROB top -> over -> RegFile top, in clean band y=178..220 -->
+
+  <!-- ============ DISPATCH BUS ============ -->
+  <line class="rail" x1="20" y1="220" x2="1220" y2="220"/>
+  <text x="22" y="215" class="lblBold">ISSUE / DISPATCH BUS</text>
+
+  <!-- drops from bus to storage row -->
+  <line class="arrow" x1="190" y1="220" x2="190" y2="248" marker-end="url(#ar)"/>
+  <line class="arrow" x1="600" y1="220" x2="600" y2="248" marker-end="url(#ar)"/>
+  <line class="arrow" x1="1030" y1="220" x2="1030" y2="248" marker-end="url(#ar)"/>
+
+  <!-- ============ (3) REGISTER FILE ============ -->
+  <rect class="reg" x="20" y="248" width="340" height="120" rx="3"/>
+  <rect class="headRowG" x="20" y="248" width="340" height="22" rx="3"/>
+  <text x="190" y="263" text-anchor="middle" class="head">Register File   x0..x31  -  32 x 32-bit (RV32I)</text>
+  <text x="190" y="279" text-anchor="middle" class="nameSub">written only by ROB commit (in-order)</text>
+  <line class="grid" x1="20"  y1="288" x2="360" y2="288"/>
+  <line class="grid" x1="20"  y1="308" x2="360" y2="308"/>
+  <line class="grid" x1="20"  y1="328" x2="360" y2="328"/>
+  <line class="grid" x1="20"  y1="348" x2="360" y2="348"/>
+  <line class="grid" x1="105" y1="288" x2="105" y2="368"/>
+  <line class="grid" x1="190" y1="288" x2="190" y2="368"/>
+  <line class="grid" x1="275" y1="288" x2="275" y2="368"/>
+  <text x="62"  y="301" text-anchor="middle" class="head">Reg</text>
+  <text x="147" y="301" text-anchor="middle" class="head">Value</text>
+  <text x="232" y="301" text-anchor="middle" class="head">Reg</text>
+  <text x="317" y="301" text-anchor="middle" class="head">Value</text>
+  <text x="62"  y="321" text-anchor="middle" class="cell">x0</text>
+  <text x="147" y="321" text-anchor="middle" class="cell">0</text>
+  <text x="232" y="321" text-anchor="middle" class="cell">x5</text>
+  <text x="317" y="321" text-anchor="middle" class="cell">3</text>
+  <text x="62"  y="341" text-anchor="middle" class="cell">x2</text>
+  <text x="147" y="341" text-anchor="middle" class="cell">10</text>
+  <text x="232" y="341" text-anchor="middle" class="cell">x7</text>
+  <text x="317" y="341" text-anchor="middle" class="cell">8</text>
+  <text x="62"  y="361" text-anchor="middle" class="cell">x3</text>
+  <text x="147" y="361" text-anchor="middle" class="cell">5</text>
+  <text x="232" y="361" text-anchor="middle" class="cell">...</text>
+  <text x="317" y="361" text-anchor="middle" class="cell">...</text>
+
+  <!-- ============ (4) RAT ============ -->
+  <rect class="logic" x="380" y="248" width="440" height="120" rx="3"/>
+  <rect class="headRow" x="380" y="248" width="440" height="22" rx="3"/>
+  <text x="600" y="263" text-anchor="middle" class="head">RAT  -  Register Alias Table   (32 entries)</text>
+  <text x="600" y="279" text-anchor="middle" class="nameSub">arch reg &#8594; ROB tag  -  cleared by CDB on tag match</text>
+  <line class="grid" x1="380" y1="288" x2="820" y2="288"/>
+  <line class="grid" x1="380" y1="308" x2="820" y2="308"/>
+  <line class="grid" x1="380" y1="328" x2="820" y2="328"/>
+  <line class="grid" x1="380" y1="348" x2="820" y2="348"/>
+  <line class="grid" x1="460" y1="288" x2="460" y2="368"/>
+  <line class="grid" x1="590" y1="288" x2="590" y2="368"/>
+  <line class="grid" x1="700" y1="288" x2="700" y2="368"/>
+  <text x="420" y="301" text-anchor="middle" class="head">Reg</text>
+  <text x="525" y="301" text-anchor="middle" class="head">Renamed</text>
+  <text x="645" y="301" text-anchor="middle" class="head">ROB tag</text>
+  <text x="760" y="301" text-anchor="middle" class="head">notes</text>
+  <text x="420" y="321" text-anchor="middle" class="cell">x1</text>
+  <text x="525" y="321" text-anchor="middle" class="cell">1</text>
+  <text x="645" y="321" text-anchor="middle" class="cell">ROB0</text>
+  <text x="760" y="321" text-anchor="middle" class="cell">ADD result</text>
+  <text x="420" y="341" text-anchor="middle" class="cell">x4</text>
+  <text x="525" y="341" text-anchor="middle" class="cell">1</text>
+  <text x="645" y="341" text-anchor="middle" class="cell">ROB1</text>
+  <text x="760" y="341" text-anchor="middle" class="cell">SUB result</text>
+  <text x="420" y="361" text-anchor="middle" class="cell">x6</text>
+  <text x="525" y="361" text-anchor="middle" class="cell">1</text>
+  <text x="645" y="361" text-anchor="middle" class="cell">ROB2</text>
+  <text x="760" y="361" text-anchor="middle" class="cell">AND result</text>
+
+  <!-- ============ (5) ROB ============ -->
+  <rect class="logic" x="840" y="248" width="380" height="120" rx="3"/>
+  <rect class="headRowO" x="840" y="248" width="380" height="22" rx="3"/>
+  <text x="1030" y="263" text-anchor="middle" class="head">Reorder Buffer (ROB)   16 entries</text>
+  <text x="1030" y="279" text-anchor="middle" class="nameSub">in-order commit  -  CDB writes value, sets ready</text>
+  <line class="grid" x1="840"  y1="288" x2="1220" y2="288"/>
+  <line class="grid" x1="840"  y1="308" x2="1220" y2="308"/>
+  <line class="grid" x1="840"  y1="328" x2="1220" y2="328"/>
+  <line class="grid" x1="840"  y1="348" x2="1220" y2="348"/>
+  <line class="grid" x1="900"  y1="288" x2="900"  y2="368"/>
+  <line class="grid" x1="970"  y1="288" x2="970"  y2="368"/>
+  <line class="grid" x1="1040" y1="288" x2="1040" y2="368"/>
+  <line class="grid" x1="1135" y1="288" x2="1135" y2="368"/>
+  <text x="870"  y="301" text-anchor="middle" class="head">Tag</text>
+  <text x="935"  y="301" text-anchor="middle" class="head">Inst</text>
+  <text x="1005" y="301" text-anchor="middle" class="head">Dest</text>
+  <text x="1087" y="301" text-anchor="middle" class="head">Value</text>
+  <text x="1177" y="301" text-anchor="middle" class="head">Ready</text>
+  <text x="870"  y="321" text-anchor="middle" class="cell">0 (head)</text>
+  <text x="935"  y="321" text-anchor="middle" class="cell">ADD</text>
+  <text x="1005" y="321" text-anchor="middle" class="cell">x1</text>
+  <text x="1087" y="321" text-anchor="middle" class="cellMt">--</text>
+  <text x="1177" y="321" text-anchor="middle" class="cell">0</text>
+  <text x="870"  y="341" text-anchor="middle" class="cell">1</text>
+  <text x="935"  y="341" text-anchor="middle" class="cell">SUB</text>
+  <text x="1005" y="341" text-anchor="middle" class="cell">x4</text>
+  <text x="1087" y="341" text-anchor="middle" class="cellMt">--</text>
+  <text x="1177" y="341" text-anchor="middle" class="cell">0</text>
+  <text x="870"  y="361" text-anchor="middle" class="cell">2 (tail)</text>
+  <text x="935"  y="361" text-anchor="middle" class="cell">AND</text>
+  <text x="1005" y="361" text-anchor="middle" class="cell">x6</text>
+  <text x="1087" y="361" text-anchor="middle" class="cellMt">--</text>
+  <text x="1177" y="361" text-anchor="middle" class="cell">0</text>
+
+  <!-- ============ STORAGE -> RS arrows (operands, tags, dest) ============ -->
+  <line class="arrow" x1="190" y1="368" x2="190" y2="404" marker-end="url(#ar)"/>
+  <line class="arrow" x1="600" y1="368" x2="600" y2="404" marker-end="url(#ar)"/>
+  <line class="arrow" x1="1030" y1="368" x2="1030" y2="404" marker-end="url(#ar)"/>
+  <text x="205" y="386" class="lbl">Vj, Vk  (operand values)</text>
+  <text x="615" y="386" class="lbl">Qj, Qk + write rd &#8594; ROB tag</text>
+  <text x="1045" y="386" class="lbl">ROB tag (Dest) + alloc</text>
+
+  <!-- ============ (6) UNIFIED RESERVATION STATION (8 slots) ============ -->
+  <rect class="logic" x="20" y="404" width="1200" height="200" rx="3"/>
+  <rect class="headRow" x="20" y="404" width="1200" height="22" rx="3"/>
+  <text x="620" y="419" text-anchor="middle" class="head">Reservation Station  -  8 slots, unified  (rtl/reservation_station.sv:38   logic [7:0] busy)</text>
+
+  <!-- vertical column dividers (column boundaries: 100, 165, 260, 415, 575, 735, 895, 1075) -->
+  <line class="grid" x1="100"  y1="404" x2="100"  y2="604"/>
+  <line class="grid" x1="165"  y1="404" x2="165"  y2="604"/>
+  <line class="grid" x1="260"  y1="404" x2="260"  y2="604"/>
+  <line class="grid" x1="415"  y1="404" x2="415"  y2="604"/>
+  <line class="grid" x1="575"  y1="404" x2="575"  y2="604"/>
+  <line class="grid" x1="735"  y1="404" x2="735"  y2="604"/>
+  <line class="grid" x1="895"  y1="404" x2="895"  y2="604"/>
+  <line class="grid" x1="1075" y1="404" x2="1075" y2="604"/>
+
+  <!-- horizontal row dividers (header at 426, then 8 rows of 22px down to y=602) -->
+  <line class="grid" x1="20" y1="426" x2="1220" y2="426"/>
+  <line class="grid" x1="20" y1="448" x2="1220" y2="448"/>
+  <line class="grid" x1="20" y1="470" x2="1220" y2="470"/>
+  <line class="grid" x1="20" y1="492" x2="1220" y2="492"/>
+  <line class="grid" x1="20" y1="514" x2="1220" y2="514"/>
+  <line class="grid" x1="20" y1="536" x2="1220" y2="536"/>
+  <line class="grid" x1="20" y1="558" x2="1220" y2="558"/>
+  <line class="grid" x1="20" y1="580" x2="1220" y2="580"/>
+
+  <!-- column headers (centers: 60, 132, 212, 337, 495, 655, 815, 985, 1147) -->
+  <text x="60"   y="441" text-anchor="middle" class="head">Slot</text>
+  <text x="132"  y="441" text-anchor="middle" class="head">Busy</text>
+  <text x="212"  y="441" text-anchor="middle" class="head">Op</text>
+  <text x="337"  y="441" text-anchor="middle" class="head">Vj</text>
+  <text x="495"  y="441" text-anchor="middle" class="head">Vk</text>
+  <text x="655"  y="441" text-anchor="middle" class="head">Qj</text>
+  <text x="815"  y="441" text-anchor="middle" class="head">Qk</text>
+  <text x="985"  y="441" text-anchor="middle" class="head">ROB tag (Dest)</text>
+  <text x="1147" y="441" text-anchor="middle" class="head">imm</text>
+
+  <!-- RS0: ADD x1, x2, x3   ALU bound, both operands ready -->
+  <text x="60"   y="463" text-anchor="middle" class="cell">RS0</text>
+  <text x="132"  y="463" text-anchor="middle" class="cell">1</text>
+  <text x="212"  y="463" text-anchor="middle" class="cell">ADD</text>
+  <text x="337"  y="463" text-anchor="middle" class="cell">10</text>
+  <text x="495"  y="463" text-anchor="middle" class="cell">5</text>
+  <text x="655"  y="463" text-anchor="middle" class="cellMt">--</text>
+  <text x="815"  y="463" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="463" text-anchor="middle" class="cell">ROB0  (x1)</text>
+  <text x="1147" y="463" text-anchor="middle" class="cell">0</text>
+
+  <!-- RS1: SUB x4, x1, x5   waits on ROB0 -->
+  <text x="60"   y="485" text-anchor="middle" class="cell">RS1</text>
+  <text x="132"  y="485" text-anchor="middle" class="cell">1</text>
+  <text x="212"  y="485" text-anchor="middle" class="cell">SUB</text>
+  <text x="337"  y="485" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="485" text-anchor="middle" class="cell">3</text>
+  <text x="655"  y="485" text-anchor="middle" class="cell">ROB0</text>
+  <text x="815"  y="485" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="485" text-anchor="middle" class="cell">ROB1  (x4)</text>
+  <text x="1147" y="485" text-anchor="middle" class="cell">0</text>
+
+  <!-- RS2: AND x6, x4, x7   waits on ROB1 -->
+  <text x="60"   y="507" text-anchor="middle" class="cell">RS2</text>
+  <text x="132"  y="507" text-anchor="middle" class="cell">1</text>
+  <text x="212"  y="507" text-anchor="middle" class="cell">AND</text>
+  <text x="337"  y="507" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="507" text-anchor="middle" class="cell">8</text>
+  <text x="655"  y="507" text-anchor="middle" class="cell">ROB1</text>
+  <text x="815"  y="507" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="507" text-anchor="middle" class="cell">ROB2  (x6)</text>
+  <text x="1147" y="507" text-anchor="middle" class="cell">0</text>
+
+  <!-- RS3: XOR x8, x1, x6   waits on ROB0 + ROB2 -->
+  <text x="60"   y="529" text-anchor="middle" class="cell">RS3</text>
+  <text x="132"  y="529" text-anchor="middle" class="cell">1</text>
+  <text x="212"  y="529" text-anchor="middle" class="cell">XOR</text>
+  <text x="337"  y="529" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="529" text-anchor="middle" class="cellMt">--</text>
+  <text x="655"  y="529" text-anchor="middle" class="cell">ROB0</text>
+  <text x="815"  y="529" text-anchor="middle" class="cell">ROB2</text>
+  <text x="985"  y="529" text-anchor="middle" class="cell">ROB3  (x8)</text>
+  <text x="1147" y="529" text-anchor="middle" class="cell">0</text>
+
+  <!-- RS4: BEQ x8, x0, +16   Branch Unit bound, waits on ROB3 -->
+  <text x="60"   y="551" text-anchor="middle" class="cell">RS4</text>
+  <text x="132"  y="551" text-anchor="middle" class="cell">1</text>
+  <text x="212"  y="551" text-anchor="middle" class="cell">BEQ</text>
+  <text x="337"  y="551" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="551" text-anchor="middle" class="cell">0</text>
+  <text x="655"  y="551" text-anchor="middle" class="cell">ROB3</text>
+  <text x="815"  y="551" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="551" text-anchor="middle" class="cell">ROB4   (--)</text>
+  <text x="1147" y="551" text-anchor="middle" class="cell">16</text>
+
+  <!-- RS5..RS7: idle -->
+  <text x="60"   y="573" text-anchor="middle" class="cell">RS5</text>
+  <text x="132"  y="573" text-anchor="middle" class="cell">0</text>
+  <text x="212"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="337"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="655"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="815"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="573" text-anchor="middle" class="cellMt">--</text>
+  <text x="1147" y="573" text-anchor="middle" class="cellMt">--</text>
+
+  <text x="60"   y="595" text-anchor="middle" class="cell">RS6</text>
+  <text x="132"  y="595" text-anchor="middle" class="cell">0</text>
+  <text x="212"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="337"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="655"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="815"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="595" text-anchor="middle" class="cellMt">--</text>
+  <text x="1147" y="595" text-anchor="middle" class="cellMt">--</text>
+
+  <text x="60"   y="617" text-anchor="middle" class="cell">RS7</text>
+  <text x="132"  y="617" text-anchor="middle" class="cell">0</text>
+  <text x="212"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="337"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="495"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="655"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="815"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="985"  y="617" text-anchor="middle" class="cellMt">--</text>
+  <text x="1147" y="617" text-anchor="middle" class="cellMt">--</text>
+
+  <!-- last RS row band -->
+  <line class="grid" x1="20" y1="602" x2="1220" y2="602"/>
+
+  <!-- ============ ISSUE / DISPATCH from RS to execution lanes ============ -->
+  <line class="arrow" x1="190"  y1="624" x2="190"  y2="660" marker-end="url(#ar)"/>
+  <line class="arrow" x1="600"  y1="624" x2="600"  y2="660" marker-end="url(#ar)"/>
+  <line class="arrow" x1="1030" y1="624" x2="1030" y2="660" marker-end="url(#ar)"/>
+  <text x="205"  y="644" class="lbl">(stubbed path)</text>
+  <text x="615"  y="644" class="lbl">issue when ready  -  R/I-type</text>
+  <text x="1045" y="644" class="lbl">issue when ready  -  B/J-type</text>
+
+  <!-- ============ (7) LSU (stubbed) ============ -->
+  <rect class="execGh" x="20" y="660" width="340" height="62" rx="3"/>
+  <text x="190" y="681" text-anchor="middle" class="nameGh">Load / Store Unit  (stubbed)</text>
+  <text x="190" y="697" text-anchor="middle" class="nameSubG">addr adder + load/store buffers</text>
+  <text x="190" y="713" text-anchor="middle" class="nameSubG">cdb_inst.lsu_req tied to 1'b0  (top.sv:514)</text>
+
+  <!-- ============ (8) ALU ============ -->
+  <rect class="exec" x="380" y="660" width="440" height="62" rx="3"/>
+  <text x="600" y="681" text-anchor="middle" class="name">ALU  (alu.sv)</text>
+  <text x="600" y="697" text-anchor="middle" class="nameSub">ADD - SUB - AND - OR - XOR   (alu_op[3:0])</text>
+  <text x="600" y="713" text-anchor="middle" class="nameSub">b = (R-type) Vk : (I-type) imm</text>
+
+  <!-- ============ (9) BRANCH UNIT ============ -->
+  <rect class="exec" x="840" y="660" width="380" height="62" rx="3"/>
+  <text x="1030" y="681" text-anchor="middle" class="name">Branch Unit  (branch_unit.sv)</text>
+  <text x="1030" y="697" text-anchor="middle" class="nameSub">BEQ - BNE - BLT - BGE   |   JAL - JALR</text>
+  <text x="1030" y="713" text-anchor="middle" class="nameSub">drives mispredict + correct_pc</text>
+
+  <!-- ============ (10) MEMORY (stubbed) ============ -->
+  <line class="arrow" x1="190" y1="722" x2="190" y2="744" marker-end="url(#ar)"/>
+  <rect class="memGh" x="20" y="744" width="340" height="48" rx="3"/>
+  <text x="190" y="764" text-anchor="middle" class="nameGh">Memory  (stubbed in OoO path)</text>
+  <text x="190" y="780" text-anchor="middle" class="nameSubG">dmem_addr/dmem_we wired at top.sv but not in flight</text>
+
+  <!-- ============ Exec -> CDB write-back ============ -->
+  <line class="arrowTh" x1="190" y1="792" x2="190" y2="804" marker-end="url(#ar)"/>
+  <text x="205" y="802" class="lbl">(inactive)</text>
+  <line class="arrowTh" x1="600" y1="722" x2="600" y2="804" marker-end="url(#ar)"/>
+  <text x="610" y="752" class="lbl">{wb_tag, wb_value, wb_valid}  -  alu_req</text>
+  <line class="arrowTh" x1="1030" y1="722" x2="1030" y2="804" marker-end="url(#ar)"/>
+  <text x="1040" y="752" class="lbl">{branch_wb_tag, branch_wb_value}  -  branch_req</text>
+
+  <!-- ============ (11) COMMON DATA BUS ============ -->
+  <rect class="cdb" x="20" y="804" width="1200" height="48" rx="2"/>
+  <text x="620" y="828" text-anchor="middle" class="cdbTxt">COMMON DATA BUS  (CDB)</text>
+  <text x="620" y="845" text-anchor="middle" class="cdbSub">arbiter priority   Branch  &gt;  ALU  &gt;  LSU       broadcast {cdb_valid, cdb_tag, cdb_value}  -  every cycle, every snooper</text>
+
+  <!-- ============ CDB feedback loops ============ -->
+  <!-- CDB -> RS (snoop, fills Vj/Vk on tag match) - left wrap -->
+  <path class="feedback" d="M 10 804 V 504 H 20" marker-end="url(#arc)"/>
+  <text x="14" y="660" class="lblBold" transform="rotate(-90 14 660)">CDB &#8594; RS  (snoop, fill Vj/Vk)</text>
+
+  <!-- CDB -> ROB (write value, set ready) - right wrap close (x=1228) -->
+  <path class="feedback" d="M 1228 804 V 308 H 1220" marker-end="url(#arc)"/>
+  <text x="1224" y="560" class="lblBold" text-anchor="end" transform="rotate(-90 1224 560)">CDB &#8594; ROB  (write value, set ready)</text>
+
+  <!-- CDB -> RAT (clear matching renames) - right wrap, then over the top to RAT bottom-right -->
+  <path class="feedback" d="M 1234 804 V 232 H 600 V 248" marker-end="url(#arc)"/>
+  <text x="940" y="228" text-anchor="middle" class="lblBold">CDB &#8594; RAT  (clear renames on tag match)</text>
+
+  <!-- ROB -> RegFile commit (in-order, separate from CDB) - dedicated channel above bus -->
+  <path class="commit" d="M 840 248 V 196 H 360 V 248" marker-end="url(#arg)"/>
+
+  <!-- Branch mispredict -> PC redirect - left wrap (far left, x=4) -->
+  <path class="feedback" d="M 840 692 V 730 H 4 V 85 H 420" marker-end="url(#arc)"/>
+  <text x="8" y="430" class="lblBold" transform="rotate(-90 8 430)">branch mispredict &#8594; pc_gen.correct_pc / flush</text>
+
+  <!-- ============ Legend ============ -->
+  <g transform="translate(20, 866)">
+    <rect class="logic"  x="0"   y="0" width="14" height="10"/>
+    <text x="20" y="9" class="lbl">control / RS / ROB / RAT</text>
+    <rect class="reg"    x="180" y="0" width="14" height="10"/>
+    <text x="200" y="9" class="lbl">register file</text>
+    <rect class="exec"   x="290" y="0" width="14" height="10"/>
+    <text x="310" y="9" class="lbl">execution units</text>
+    <rect class="execGh" x="420" y="0" width="14" height="10"/>
+    <text x="440" y="9" class="lbl">stubbed (LSU / Memory)</text>
+    <rect class="cdb"    x="600" y="0" width="14" height="10"/>
+    <text x="620" y="9" class="lbl">CDB</text>
+    <line class="feedback" x1="660" y1="5" x2="700" y2="5" marker-end="url(#arc)"/>
+    <text x="706" y="9" class="lbl">CDB broadcast / snoop / mispredict</text>
+    <line class="commit"   x1="940" y1="5" x2="980" y2="5" marker-end="url(#arg)"/>
+    <text x="986" y="9" class="lbl">in-order commit</text>
+  </g>
+</svg>
